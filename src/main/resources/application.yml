@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/innowise-database
+    username: ${db_username}
+    password: ${db_password}
+
+  liquibase:
+    change-log: classpath:db/changelog/main-changelog.yml
+    enabled: true
+
