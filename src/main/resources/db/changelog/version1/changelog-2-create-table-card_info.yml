@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2-create-table-card_info
+      author: Lingoid
+      changes:
+        - createTable:
+            tableName: card_info
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: card_user_fk
+                    referencedTableName: users
+                    referencedColumnNames: id
+              - column:
+                  name: number
+                  type: varchar(30)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: holder
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expiration_date
+                  type: date
+                  constraints:
+                    nullable: false
+
+        - createIndex:
+            indexName: card_info_user_id_idx
+            tableName: card_info
+            columns:
+              - column:
+                  name: user_id
