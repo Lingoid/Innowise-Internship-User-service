@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3-add-cascade-to-card_user_fk
+      author: Lingoid
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: card_info
+            constraintName: card_user_fk
+        - addForeignKeyConstraint:
+            baseTableName: card_info
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: card_user_fk
+            onDelete: CASCADE
