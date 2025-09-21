@@ -9,11 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Repository
-public class CardDao {
+public class CardDAO {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public CardDao(NamedParameterJdbcTemplate jdbcTemplate) {
+    public CardDAO(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
