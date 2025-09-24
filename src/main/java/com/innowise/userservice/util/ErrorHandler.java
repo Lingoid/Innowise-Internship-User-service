@@ -9,6 +9,15 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class ErrorHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleExceptionCase(Exception e) {
+        ErrorResponse response = new ErrorResponse(
+                "Internal server error",
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException e) {
         ErrorResponse response = new ErrorResponse(

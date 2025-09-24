@@ -1,8 +1,6 @@
 package com.innowise.userservice.controllers;
 
 import com.innowise.userservice.dto.UserDTO;
-import com.innowise.userservice.mapper.UserMapper;
-import com.innowise.userservice.model.User;
 import com.innowise.userservice.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,39 +20,30 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    private final UserMapper userMapper;
 
-    public UserController(UserService userService, UserMapper userMapper) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userMapper = userMapper;
     }
 
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO userDTO) {
-        User created = userService.createUser(userMapper.toEntity(userDTO));
-        return ResponseEntity.status(201).body(userMapper.fromEntity(created));
+        return ResponseEntity.status(201).body(userService.createUser(userDTO));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable Long id) {
-        User user = userService.getUserById(id);
-        return ResponseEntity.ok(userMapper.fromEntity(user));
+        return ResponseEntity.ok(userService.getUserById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getUsers(@RequestParam List<Long> ids) {
-        List<User> users = userService.getUsersByIds(ids);
-        return ResponseEntity.ok(users.stream().map(userMapper::fromEntity).toList());
+        return ResponseEntity.ok(userService.getUsersByIds(ids));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long id,
                                               @Valid @RequestBody UserDTO userDTO) {
-        User user = userMapper.toEntity(userDTO);
-        user.setId(id);
-
-        User updatedUser = userService.updateUser(user);
-        return ResponseEntity.ok(userMapper.fromEntity(updatedUser));
+        return ResponseEntity.ok(userService.updateUser(id, userDTO));
     }
 
     @DeleteMapping("/{id}")

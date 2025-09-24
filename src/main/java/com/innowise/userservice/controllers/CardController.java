@@ -1,8 +1,6 @@
 package com.innowise.userservice.controllers;
 
 import com.innowise.userservice.dto.CardDTO;
-import com.innowise.userservice.mapper.CardMapper;
-import com.innowise.userservice.model.Card;
 import com.innowise.userservice.services.CardService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -23,39 +21,30 @@ import java.util.List;
 public class CardController {
 
     private final CardService cardService;
-    private final CardMapper cardMapper;
 
-    public CardController(CardService cardService, CardMapper cardMapper) {
+    public CardController(CardService cardService) {
         this.cardService = cardService;
-        this.cardMapper = cardMapper;
     }
 
     @PostMapping
     public ResponseEntity<CardDTO> createCard(@Valid @RequestBody CardDTO cardDTO) {
-        Card created = cardService.createCard(cardMapper.toEntity(cardDTO));
-        return ResponseEntity.status(201).body(cardMapper.fromEntity(created));
+        return ResponseEntity.status(201).body(cardService.createCard(cardDTO));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<CardDTO> getCard(@PathVariable Long id) {
-        Card card = cardService.getCardById(id);
-        return ResponseEntity.ok(cardMapper.fromEntity(card));
+        return ResponseEntity.ok(cardService.getCardById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<CardDTO>> getCards(@RequestParam List<Long> ids) {
-        List<Card> cards = cardService.getCardsByIds(ids);
-        return ResponseEntity.ok(cards.stream().map(cardMapper::fromEntity).toList());
+        return ResponseEntity.ok(cardService.getCardsByIds(ids));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CardDTO> updateCard(@PathVariable Long id,
                                               @Valid @RequestBody CardDTO cardDTO) {
-        Card card = cardMapper.toEntity(cardDTO);
-        card.setId(id);
-
-        Card updatedCard = cardService.updateCard(card);
-        return ResponseEntity.ok(cardMapper.fromEntity(updatedCard));
+        return ResponseEntity.ok(cardService.updateCard(id, cardDTO));
     }
 
     @DeleteMapping("/{id}")
