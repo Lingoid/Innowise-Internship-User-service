@@ -5,6 +5,9 @@ import com.innowise.userservice.dto.CardDTO;
 import com.innowise.userservice.mapper.CardMapper;
 import com.innowise.userservice.model.Card;
 import com.innowise.userservice.util.CardNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +26,14 @@ public class CardService {
         this.cardMapper = cardMapper;
     }
 
+    @CachePut(value = "CardCache", key = "#result.id")
     public CardDTO createCard(CardDTO cardDTO) {
         Card card = cardMapper.toEntity(cardDTO);
         cardDAO.createCard(card);
         return cardMapper.fromEntity(card);
     }
 
+    @Cacheable(value = "CardCache", key = "#id")
     public CardDTO getCardById(Long id) {
         Card card = Optional.ofNullable(cardDAO.getCardById(id))
                 .orElseThrow(CardNotFoundException::new);
@@ -42,6 +47,7 @@ public class CardService {
     }
 
     @Transactional
+    @CachePut(value = "CardCache", key = "#result.id")
     public CardDTO updateCard(Long id, CardDTO cardDTO) {
         Card card = cardMapper.toEntity(cardDTO);
         card.setId(id);
@@ -53,6 +59,7 @@ public class CardService {
     }
 
     @Transactional
+    @CacheEvict(value = "CardCache", key = "#id")
     public void deleteCard(Long id) {
         Optional.ofNullable(cardDAO.getCardById(id))
                 .orElseThrow(CardNotFoundException::new);

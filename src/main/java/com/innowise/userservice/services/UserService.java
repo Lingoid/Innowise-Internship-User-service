@@ -5,6 +5,9 @@ import com.innowise.userservice.dto.UserDTO;
 import com.innowise.userservice.mapper.UserMapper;
 import com.innowise.userservice.model.User;
 import com.innowise.userservice.util.UserNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +25,14 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
+    @CachePut(value = "UserCache", key = "#result.id")
     public UserDTO createUser(UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
         userDAO.createUser(user);
         return userMapper.fromEntity(user);
     }
 
+    @Cacheable(value = "UserCache", key = "#id")
     public UserDTO getUserById(Long id) {
         User user = Optional.ofNullable(userDAO.getUserById(id))
                 .orElseThrow(UserNotFoundException::new);
@@ -47,6 +52,7 @@ public class UserService {
     }
 
     @Transactional
+    @CachePut(value = "UserCache", key = "#result.id")
     public UserDTO updateUser(Long id, UserDTO userDTO) {
         User user = userMapper.toEntity(userDTO);
         user.setId(id);
@@ -57,6 +63,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(value = "UserCache", key = "#id")
     public void deleteUser(Long id) {
         Optional.ofNullable(userDAO.getUserById(id))
                 .orElseThrow(UserNotFoundException::new);

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 @Data
 public class UserDTO {
+    private Long id;
 
     @NotBlank(message = "Name must not be blank")
     @Size(min = 2, max = 50, message = "name should be between 2 and 50 characters")
