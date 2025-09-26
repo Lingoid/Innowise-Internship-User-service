@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 @Data
 public class CardDTO {
+    private Long id;
 
     @NotNull(message = "User ID must not be null")
     private Long userId;
