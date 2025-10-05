@@ -22,6 +22,11 @@ spring:
     mapper:
       require-handlers-for-java8-times: false
 
+auth:
+  service:
+    url: ${VALIDATE_TOKEN_REQUEST-URL}
+
+
 
 
 
