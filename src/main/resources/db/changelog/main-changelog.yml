@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/version1/changelog-2-create-table-card_info.yml
   - include:
       file: db/changelog/version1/changelog-3-add-cascade-delete-to-table-card_info.yml
+  - include:
+      file: db/changelog/version1/changelog-4-remove-auto-increment-id.yml

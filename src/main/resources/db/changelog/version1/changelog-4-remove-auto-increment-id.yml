@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4-remove-auto-increment-users-id
+      author: Lingoid
+      changes:
+        - sql:
+            sql: "ALTER TABLE users ALTER COLUMN id DROP IDENTITY;"
