@@ -15,9 +15,12 @@ import org.springframework.web.client.RestTemplate;
 public class SecurityConfig {
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter(RestTemplate restTemplate,
-                                                           @Value("${auth.service.url}") String authServiceUrl) {
-        return new JwtAuthenticationFilter(restTemplate, authServiceUrl);
+    public JwtAuthenticationFilter jwtAuthenticationFilter(
+            RestTemplate restTemplate,
+            @Value("${auth.service.url}") String authServiceUrl,
+            @Value("${registration.secret-word}") String secretWord) {
+
+        return new JwtAuthenticationFilter(restTemplate, authServiceUrl, secretWord);
     }
 
     @Bean
@@ -27,6 +30,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/users").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

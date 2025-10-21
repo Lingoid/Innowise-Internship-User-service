@@ -1,5 +1,6 @@
 package com.innowise.userservice.security;
 
+import com.innowise.userservice.util.SecretWordAccessDeniedException;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,10 +22,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final RestTemplate restTemplate;
     private final String authServiceUrl;
+    private final String secretWord;
 
-    public JwtAuthenticationFilter(RestTemplate restTemplate, String authServiceUrl) {
+    public JwtAuthenticationFilter(RestTemplate restTemplate, String authServiceUrl, String secretWord) {
         this.restTemplate = restTemplate;
         this.authServiceUrl = authServiceUrl;
+        this.secretWord = secretWord;
     }
 
     @Override
@@ -33,6 +36,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+
+        if (request.getRequestURI().startsWith("/users") && request.getMethod().equals("POST")) {
+            String secretHeader = request.getHeader("secret");
+            if (secretHeader == null || !secretHeader.equals(secretWord)) {
+                throw new SecretWordAccessDeniedException();
+            }
+        }
 
         final String authHeader = request.getHeader("Authorization");
 
@@ -63,7 +73,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
-
         } catch (Exception ex) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
