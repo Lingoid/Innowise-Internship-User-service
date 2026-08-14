@@ -24,8 +24,13 @@ spring:
 
 auth:
   service:
-    url: ${VALIDATE_TOKEN_REQUEST-URL}
+    url: ${VALIDATE_TOKEN_REQUEST_URL}
 
+registration:
+  secret-word: ${MY_SECRET_WORD}
+
+server:
+  port: ${PORT}
 
 
 
